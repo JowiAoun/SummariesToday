@@ -2,6 +2,7 @@
 // Modules
 import express from "express";
 import mongoose from 'mongoose';
+// Others
 import mongodbUri from "../config";
 
 
@@ -14,6 +15,7 @@ const db = mongoose.connect(mongodbUri)
 app.get('/', (req, res) => {
     res.send("Hello World!");
 });
+
 
 // Start server
 app.listen(5000);

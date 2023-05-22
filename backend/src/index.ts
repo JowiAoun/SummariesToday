@@ -1,10 +1,13 @@
 // --- Imports
 // Modules
-import express, { Request, Response } from "express";
+import express from "express";
+import mongoose from 'mongoose';
+import mongodbUri from "../config";
 
 
-// --- Setting up the app
+// --- Setting up the app and database
 const app = express();
+const db = mongoose.connect(mongodbUri)
 
 
 // --- Routes

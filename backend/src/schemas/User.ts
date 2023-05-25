@@ -6,15 +6,13 @@ import mongoose, { Schema } from "mongoose";
 const bookSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        default: "New Book"
     },
     text: {
         type: String,
-        required: true,
     },
     age: {
         type: Number,
-        required: true,
     }
 });
 

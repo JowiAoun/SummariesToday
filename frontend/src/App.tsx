@@ -7,41 +7,44 @@ function App() {
   const [text, setText] = useState("");
 
   // --- Event handlers
-  function handleCreateDocument(e: React.FormEvent) {
+  async function handleCreateDocument(e: React.FormEvent) {
     e.preventDefault(); // makes the page not refresh on submit
     // create the post request to talk to the backend
-    fetch("http://localhost:5000/document", {
+    await fetch("http://localhost:5000/createNewBook", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
-        title,
-        text,
+        title: title,
+        text: text,
       }),
     });
+    setTitle("");
+    setText("");
   }
 
   // --- Create component
   return (
-    <>
-      <form onSubmit={handleCreateDocument}>
-        <input
-          placeholder="Title"
-          id="document-title"
-          value={title}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setTitle(e.target.value);
-          }}
-        />
-        <input
-          placeholder="Text"
-          id="document-text"
-          value={text}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setText(e.target.value);
-          }}
-        />
-        <button>Create Document</button>
-      </form>
-    </>
+    <form onSubmit={handleCreateDocument}>
+      <input
+        placeholder="Title"
+        id="book-title"
+        value={title}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setTitle(e.target.value);
+        }}
+      />
+      <input
+        placeholder="Text"
+        id="book-text"
+        value={text}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setText(e.target.value);
+        }}
+      />
+      <button>Create Book</button>
+    </form>
   );
 }
 

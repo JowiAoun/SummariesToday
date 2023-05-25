@@ -1,28 +1,43 @@
-import User from "./schemas/User";
+// --- Imports
+import { Request, Response } from "express";
+import { Document } from "mongoose";
+import UserModel from "./schemas/User";
 
-function testCreateUser() {
-  // Creates a new user and save it to the database
-  const newUser = new User({
-    username: "John Doe",
-    email: "johndoe@example.com",
-    password: "abc123",
-    age: 30,
-    country: "CA",
-    books: [
-      {
-        title: "Book 1",
-        text: "Computer science truly has endless posibilities.",
-        age: 10,
-      },
-      {
-        title: "Book 2",
-        text: "Physics is very cool. This is why...",
-        age: 55430,
-      },
-    ],
-  });
-
-  newUser.save()
+// --- Interfaces
+interface Book {
+  title: string;
+  text: string;
+  age: number;
 }
 
-export default testCreateUser;
+interface User extends Document {
+  username: string;
+  email: string;
+  password: string;
+  age: number;
+  country: string;
+  settings: string;
+  books: Book[];
+}
+
+// --- Functions
+function getUserByUsername(req: Request, res: Response, callback: Function) {
+  const username = req.body.username;
+  UserModel.findOne({ username })
+    .then((u) => {
+      if (!u) {
+        res.status(404).send("User not found");
+        return;
+      }
+
+      let user = u as User;
+      callback(user);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+}
+
+// --- Export
+export default getUserByUsername;

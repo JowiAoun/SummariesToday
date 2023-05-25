@@ -75,12 +75,11 @@ app.post("/createNewUser", (req: Request, res: Response) => {
 
 // Create a new book for a user from raw JSON and saves to DB
 app.post("/createNewBook", (req: Request, res: Response) => {
-  req.body.username = "John Doe"; //TODO: change to request body's session username
   getUserByUsername(req, res, (user: User) => {
     // Code to execute after getting user
     req.body.age = new Date().getTime();
     user.books.push(req.body);
-    user //TODO: find how to save only documents (subdocument) array
+    user
       .save()
       .then(() => {
         res.send("Successfully created the new book!");
@@ -91,6 +90,31 @@ app.post("/createNewBook", (req: Request, res: Response) => {
       });
   });
 });
+
+// Deletes a user with the specified username from raw JSON from DB
+app.post("/deleteUser", (req, res) => {
+  UserModel.deleteOne({ username: req.body.username })
+    .then(() => {
+      res.send("Successfully deleted the user!");
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
+// Deletes a book by ID with the specified username from raw JSON from DB
+app.post("/deleteBook", (req, res) => {
+  UserModel.updateOne({ username: req.body.username }, { $pull: { books: { _id: req.body.id_ } } })
+    .then(() => {
+      res.send("Successfully deleted the book!");
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
 
 // --- Start server
 app.listen(PORT);

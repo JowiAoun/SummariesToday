@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // --- Hooks
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
 
+  // --- Event handlers
+  function handleCreateDocument(e: React.FormEvent) {
+    e.preventDefault(); // makes the page not refresh on submit
+    // create the post request to talk to the backend
+    fetch("http://localhost:5000/document", {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+        text,
+      }),
+    });
+  }
+
+  // --- Create component
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <form onSubmit={handleCreateDocument}>
+        <input
+          placeholder="Title"
+          id="document-title"
+          value={title}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setTitle(e.target.value);
+          }}
+        />
+        <input
+          placeholder="Text"
+          id="document-text"
+          value={text}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setText(e.target.value);
+          }}
+        />
+        <button>Create Document</button>
+      </form>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

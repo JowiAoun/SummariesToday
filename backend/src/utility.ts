@@ -1,30 +1,28 @@
 import User from "./schemas/User";
 
-
 function testCreateUser() {
-    /* Create a new user and save it to the database
-    */
-    const newUser = new User({
-        username: 'John Doe',
-        email: 'johndoe@example.com',
-        age: 30,
-        country: "CA",
-        documents: [
-            {
-                title: "Test document",
-                age: "10"
-            }
-        ]
-    });
-    
-    newUser.save()
-    .then(savedUser => {
-        console.log('User saved:', savedUser);
-    })
-    .catch(error => {
-        console.error('Error saving user:', error);
+  // Creates a new user and save it to the database
+  const newUser = new User({
+    username: "John Doe",
+    email: "johndoe@example.com",
+    password: "abc123",
+    age: 30,
+    country: "CA",
+    books: [
+      {
+        title: "Book 1",
+        text: "Computer science truly has endless posibilities.",
+        age: 10,
+      },
+      {
+        title: "Book 2",
+        text: "Physics is very cool. This is why...",
+        age: 55430,
+      },
+    ],
   });
-}
 
+  newUser.save()
+}
 
 export default testCreateUser;

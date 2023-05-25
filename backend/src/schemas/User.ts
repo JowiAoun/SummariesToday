@@ -1,10 +1,14 @@
 // --- Imports
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 
 // --- Define the schemas
-const documentSchema = new mongoose.Schema({
+const bookSchema = new Schema({
     title: {
+        type: String,
+        required: true,
+    },
+    text: {
         type: String,
         required: true,
     },
@@ -14,7 +18,7 @@ const documentSchema = new mongoose.Schema({
     }
 });
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     username: { // TODO: Allow no special characters and add max/min length
       type: String,
       required: true,
@@ -24,6 +28,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
       unique: true
+    },
+    password: {
+        type: String,
+        required: true,
     },
     age: {
       type: Number,
@@ -36,8 +44,8 @@ const userSchema = new mongoose.Schema({
     settings: {
         type: String
     },
-    documents: {
-        type: [documentSchema]
+    books: {
+        type: [bookSchema]
     }
 });
 

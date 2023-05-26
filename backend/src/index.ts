@@ -14,15 +14,11 @@ const PORT = 5000;
 // --- Set up the app and database
 // App
 const app = express();
-// Middlewares
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-app.use(express.json());
 // Database
 const db = mongoose.connect(mongodbUri);
+// Middlewares
+app.use(cors({ origin: "*" }));
+app.use(express.json());
 
 // --- Interfaces
 interface Book {
@@ -60,39 +56,40 @@ app.get("/books", (req: Request, res: Response) => {
 });
 
 // Create a new user from raw JSON and saves to DB
-app.post("/createNewUser", (req: Request, res: Response) => {
-  const user = new UserModel(req.body);
-  user
-    .save()
-    .then(() => {
-      res.send("Successfully created the user!");
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
+app.post("/createNewUser", async (req: Request, res: Response) => {
+  // Mark the anonymous function as async
+  try {
+    const user = new UserModel(req.body);
+    await user.save(); // Wait for the save operation to complete
+
+    res.send("Successfully created the user!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Create a new book for a user from raw JSON and saves to DB
 app.post("/createNewBook", (req: Request, res: Response) => {
-  getUserByUsername(req, res, (user: User) => {
+  getUserByUsername(req, res, async (user: User) => {
+    // Mark the anonymous function as async
     // Code to execute after getting user
     req.body.age = new Date().getTime();
     user.books.push(req.body);
-    user
-      .save()
-      .then(() => {
-        res.send("Successfully created the new book!");
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
-      });
+
+    try {
+      await user.save(); // Wait for the save operation to complete
+
+      res.send("Successfully created the new book!");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   });
 });
 
 // Deletes a user with the specified username from raw JSON from DB
-app.post("/deleteUser", (req, res) => {
+app.post("/deleteUser", (req: Request, res: Response) => {
   UserModel.deleteOne({ username: req.body.username })
     .then(() => {
       res.send("Successfully deleted the user!");
@@ -103,9 +100,12 @@ app.post("/deleteUser", (req, res) => {
     });
 });
 
-// Deletes a book by ID with the specified username from raw JSON from DB
-app.post("/deleteBook", (req, res) => {
-  UserModel.updateOne({ username: req.body.username }, { $pull: { books: { _id: req.body.id_ } } })
+// Deletes a book by ID for the user with the specified username from raw JSON from DB
+app.post("/deleteBook", (req: Request, res: Response) => {
+  UserModel.updateOne(
+    { username: req.body.username },
+    { $pull: { books: { _id: req.body.id_ } } }
+  )
     .then(() => {
       res.send("Successfully deleted the book!");
     })
@@ -114,7 +114,6 @@ app.post("/deleteBook", (req, res) => {
       res.status(500).send("Internal Server Error");
     });
 });
-
 
 // --- Start server
 app.listen(PORT);

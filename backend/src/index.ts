@@ -47,11 +47,11 @@ app.get("/profile", (req: Request, res: Response) => {
 });
 
 // Fetch books for a user by username
-app.get("/books", (req: Request, res: Response) => {
+app.post("/books", (req: Request, res: Response) => {
   getUserByUsername(req, res, (user: User) => {
     // Code to execute after getting user
     let books: Book[] = user.books;
-    res.send(books);
+    res.json(books);
   });
 });
 

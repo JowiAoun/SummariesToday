@@ -38,21 +38,74 @@ interface User extends Document {
 }
 
 // --- Routes
-// Fetch a profile by username
+//TODO: Fetch this user's profile by session's username
 app.get("/profile", (req: Request, res: Response) => {
   getUserByUsername(req, res, (user: User) => {
     // Code to execute after getting user
-    res.send(user);
+    res.json(user);
   });
 });
 
-// Fetch books for a user by username
-app.post("/books", (req: Request, res: Response) => {
-  getUserByUsername(req, res, (user: User) => {
-    // Code to execute after getting user
-    let books: Book[] = user.books;
-    res.json(books);
-  });
+// Fetch a user by user ID in request parameters
+app.get("/users/:userId", async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  const user = await UserModel.findOne({ _id: userId });
+  try {
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Delete a user by user ID in request parameters
+app.delete("/users/:userId", async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  const response = await UserModel.deleteOne({
+    _id: userId,
+  })
+    .then(() => {
+      res.send("Successfully deleted user!"); //TODO: check if user was actually deleted to send appropriate message
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
+// Get the book with the specified ID
+app.get("/books/:bookId", async (req: Request, res: Response) => {
+  const bookId = req.params.bookId;
+  try {
+    const book = await UserModel.findOne(
+      { "books._id": bookId },
+      { "books.$": 1 }
+    );
+    if (book && book.books.length > 0) {
+      res.json(book.books[0]);
+    } else {
+      res.status(404).send("Book not found");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Deletes a book by ID for the user with the specified username from raw JSON from DB
+app.delete("/books/:bookId", async (req: Request, res: Response) => {
+  const bookId = req.params.bookId;
+  await UserModel.updateOne(
+    { "books._id": bookId },
+    { $pull: { books: { _id: bookId } } }
+  )
+    .then(() => {
+      res.send("Successfully deleted book!");
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 // Create a new user from raw JSON and saves to DB
@@ -86,33 +139,6 @@ app.post("/createNewBook", (req: Request, res: Response) => {
       res.status(500).send("Internal Server Error");
     }
   });
-});
-
-// Deletes a user with the specified username from raw JSON from DB
-app.post("/deleteUser", (req: Request, res: Response) => {
-  UserModel.deleteOne({ username: req.body.username })
-    .then(() => {
-      res.send("Successfully deleted the user!");
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
-});
-
-// Deletes a book by ID for the user with the specified username from raw JSON from DB
-app.post("/deleteBook", (req: Request, res: Response) => {
-  UserModel.updateOne(
-    { username: req.body.username },
-    { $pull: { books: { _id: req.body.id_ } } }
-  )
-    .then(() => {
-      res.send("Successfully deleted the book!");
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    });
 });
 
 // --- Start server

@@ -22,6 +22,7 @@ app.use(express.json());
 
 // --- Interfaces
 interface Book {
+  _id: string;
   title: string;
   text: string;
   age: number;
@@ -71,6 +72,19 @@ app.delete("/users/:userId", async (req: Request, res: Response) => {
       console.error(error);
       res.status(500).send("Internal Server Error");
     });
+});
+
+// Get all books of a user by user ID
+app.get("/books", async (req: Request, res: Response) => {
+  const username_ = "John Doe"; //TODO: Change to session username
+  const user = await UserModel.findOne({ username: username_ });
+  try {
+    const books = user?.books;
+    res.json(books);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Get the book with the specified ID
@@ -131,9 +145,10 @@ app.post("/createNewBook", (req: Request, res: Response) => {
     user.books.push(req.body);
 
     try {
-      await user.save(); // Wait for the save operation to complete
+      const savedUser = await user.save(); // Wait for the save operation to complete
+      const newBookId = savedUser.books[savedUser.books.length - 1]._id;
 
-      res.send("Successfully created the new book!");
+      res.json({ bookId: newBookId });
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");

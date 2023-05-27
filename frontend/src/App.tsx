@@ -4,7 +4,7 @@ import "./App.css";
 type TBook = {
   title: string;
   _id: string;
-}
+};
 
 function App() {
   // --- Hooks
@@ -13,21 +13,33 @@ function App() {
   const [books, setBooks] = useState<TBook[]>([]);
 
   // --- Event handlers
-  async function handleCreateDocument(e: React.FormEvent) {
+  async function handleCreateBook(e: React.FormEvent) {
     e.preventDefault(); // makes the page not refresh on submit
     // create the post request to talk to the backend
-    await fetch("http://localhost:5000/createNewBook", {
+    const response = await fetch("http://localhost:5000/createNewBook", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        username: "John Doe", //TODO: Change to session username
         title: title,
         text: text,
       }),
     });
+    const book = await response.json();
+    setBooks([...books, book]);
+
     setTitle("");
     setText("");
+  }
+
+  async function handleDeleteBook(bookId: string) {
+    // create the post request to talk to the backend
+    await fetch(`http://localhost:5000/books/${bookId}`, {
+      method: "DELETE",
+    });
+    setBooks(books.filter((book) => book._id !== bookId));
   }
 
   // Loads all books
@@ -37,13 +49,7 @@ function App() {
     async function fetchBooks() {
       try {
         const response = await fetch("http://localhost:5000/books", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: "John Doe", //TODO: Change to session username
-          }),
+          method: "GET",
         });
         if (response.ok) {
           const newBooks = await response.json();
@@ -62,13 +68,14 @@ function App() {
   return (
     <>
       <ul className="books">
-        {
-          books.map((book) => (
-            <li key={book._id}>{book.title}</li>
-          ))
-        }
+        {books.map((book) => (
+          <li key={book._id}>
+            <button onClick={() => handleDeleteBook(book._id)}>X</button>
+            {book.title}
+          </li>
+        ))}
       </ul>
-      <form onSubmit={handleCreateDocument}>
+      <form onSubmit={handleCreateBook}>
         <input
           placeholder="Title"
           id="book-title"

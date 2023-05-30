@@ -146,9 +146,8 @@ app.post("/createNewBook", (req: Request, res: Response) => {
 
     try {
       const savedUser = await user.save(); // Wait for the save operation to complete
-      const newBookId = savedUser.books[savedUser.books.length - 1]._id;
 
-      res.json({ bookId: newBookId });
+      res.json(savedUser.books[savedUser.books.length - 1]);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");

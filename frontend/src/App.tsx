@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./App.css";
 
 type TBook = {
@@ -71,7 +72,8 @@ function App() {
         {books.map((book) => (
           <li key={book._id}>
             <button onClick={() => handleDeleteBook(book._id)}>X</button>
-            {book.title}
+            <Link to={`books/${book._id}`}>
+            {book.title}</Link>
           </li>
         ))}
       </ul>

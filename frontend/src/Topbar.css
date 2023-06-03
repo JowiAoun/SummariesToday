@@ -1,20 +1,35 @@
+html {
+  font-size: 12px; /* Set the base font size in pixels */
+}
+
 .topbar {
-    display: flex;
-    align-items: center;
-    align-content: center;
-    flex-shrink: 0;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: lightgray;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+  flex-shrink: 0;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: lightgray;
 }
 
-.button {
-    align-items: center;
-    align-content: center;
+.button-div {
+  display: flex;
+  justify-content: center;
+  user-select: none;
+  transition: background 20ms ease-in 0s;
+  border-radius: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 1rem;
 }
 
-.svg {
-    width: 20px;
+.button-div:hover {
+    background-color: rgba(255, 255, 255, 0.055);
+}
+
+.button-svg {
+  width: 1.6rem;
 }

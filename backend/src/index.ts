@@ -15,7 +15,7 @@ const PORT = 5000;
 // App
 const app = express();
 // Database
-const db = mongoose.connect(mongodbUri);
+mongoose.connect(mongodbUri);
 // Middlewares
 app.use(cors({ origin: "*" }));
 app.use(express.json());

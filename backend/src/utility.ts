@@ -1,7 +1,7 @@
 // --- Imports
-import { Request, Response } from "express";
 import { Document } from "mongoose";
 import UserModel from "./schemas/User";
+import { Request, Response } from "express";
 
 // --- Interfaces
 interface Book {

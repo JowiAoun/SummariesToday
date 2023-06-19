@@ -72,8 +72,7 @@ function App() {
         {books.map((book) => (
           <li key={book._id}>
             <button onClick={() => handleDeleteBook(book._id)}>X</button>
-            <Link to={`books/${book._id}`}>
-            {book.title}</Link>
+            <Link to={`books/${book._id}`}>{book.title}</Link>
           </li>
         ))}
       </ul>

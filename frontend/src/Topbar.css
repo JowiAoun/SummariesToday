@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
 html {
-  font-size: 12px; /* Set the base font size in pixels */
+  font-size: 12px;
 }
 
 .topbar {
@@ -37,3 +38,4 @@ html {
 .button-svg {
   width: 1.6rem;
 }
+*/
